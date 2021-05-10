@@ -32,3 +32,4 @@ else :
     # Declare the class & then execute
     solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
     CrossFold.fold_create("pima-folds.csv", solution.training_data, 10)
+    CrossFold.split_folder_to_files("pima-folds.csv", 10, "test.csv", "train.csv")
