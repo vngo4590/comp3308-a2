@@ -7,7 +7,7 @@ class CrossFold:
     This method is used to look for fold inside the data
     '''
     @staticmethod
-    def split_folder_to_files(fold_file_dir:str, fold_num:int, test_dir:str, train_dir:str):
+    def split_folder_to_files(fold_file_dir:str, fold_num:int, test_dir:str, train_dir:str, result_dir:str):
         fold_name = "fold"+str(fold_num)
         # Read the original data
         data = CrossFold.read_file_data(fold_file_dir)
@@ -22,21 +22,25 @@ class CrossFold:
             else:
                 if (len(line) != 1 or line[0].strip().lower()[:4] != "fold"):
                     if is_testing:
-                        testing_set.append(line)
+                        testing_set.append(line[:-1])
+                        result_set.append(line[-1:])
                     else:
                         training_set.append(line)
         # Write data to files
         try:
             test_file = open(test_dir, 'w', newline='')
             train_file = open(train_dir, 'w', newline='')
+            result_file = open(result_dir, 'w', newline='')
         except:
             raise("Unable to write to file")
             return None
-        with test_file, train_file:
+        with test_file, train_file, result_file:
             csv_test = csv.writer(test_file)
             csv_train = csv.writer(train_file)
+            csv_result = csv.writer(result_file)
             csv_test.writerows(testing_set)
             csv_train.writerows(training_set)
+            csv_result.writerows(result_set)
 
     @staticmethod
     def fold_create(fold_dir:str, data:List, fold_num:int=10):
@@ -95,7 +99,7 @@ class CrossFold:
         with f:
             # Strip all white space characters in line
             lines = [line.strip() for line in f]
-            
+
             result = [CrossFold.convert_line_to_data(line) for line in lines]
             f.close()
         return result
@@ -105,14 +109,14 @@ class CrossFold:
         try :
             result = []
             i = 2
-            
+
             # collecting forbidden numbers
             temp = [v.strip().lower() for v in line.split(',')]
             for t in temp:
                 try :
                     result.append(float(t))
                 except ValueError:
-                    
+
                     result.append(t)
                     continue
             i +=1
@@ -131,10 +135,9 @@ class CrossFold:
                 if sample[-2:] == 'nn':
                     try:
                         num_nearest = int(sample[:-2])
-                        return [num_nearest, sample[-2:]]
+                        return [sample[-2:],num_nearest]
                     except:
                         return None
                 else:
                     return None
         return None
-        
