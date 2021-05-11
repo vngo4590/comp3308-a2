@@ -60,7 +60,6 @@ class MyClassifier:
         factor = 1/(std_deviation*math.sqrt(2*math.pi))
         exp_hat = math.exp((-1*pow((x-mean), 2))/(2*pow(std_deviation,2)))
         return factor*exp_hat
-
     def k_nearest_neighbors(self, test:List, neighbors_no:int):
         '''
         From the training set, begin to search for k nearest neighbors
