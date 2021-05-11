@@ -20,6 +20,18 @@ class MyClassifier:
         self.algo_type = CrossFold.get_algo_type(algo_type)
         # Result storing yes or no
         self.result = []
+    def find_euclidean(self, train:List, test:List):
+        if (train == None or test == None):
+            return None
+        train_sample = train[:-1]
+        if (len(train_sample) != len(test)):
+            return None
+        sum_eu = 0
+        for i in range(0, len(train_sample)):
+            if isinstance((train_sample[i]), numbers.Number) and isinstance((test[i]), numbers.Number):
+                sum_eu += pow((train_sample[i]-test[i]), 2)
+        return math.sqrt(sum_eu)
+
     def find_mean(self, column_no:int, class_str:str):
         class_type = class_str.strip().lower()
         if (class_type == None):
@@ -125,5 +137,8 @@ else :
     # Declare the class & then execute
     solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
     # Print result
-    # [print(n) for n in solution.run()]
-    print(solution.find_density(4, 0.3, 'yes'))
+    # [print(n) for n in solution.run())
+    '''
+    Example of using euclidean
+    print(solution.find_euclidean([1, 0.1, 3.9, "yes"], [1, 2, 0.3]))
+    '''
