@@ -155,11 +155,11 @@ if len(sys.argv) != 4:
     print("Wrong Input")
 else :
     # Declare the class & then execute
-    # solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
-    # # Print result
-    # [print(n) for n in solution.run()]
-    CrossFold.fold_create("pima-folds.csv", CrossFold.read_file_data("pima.csv"))
-    CrossFold.split_folder_to_files("pima-folds.csv", 1,"./tests/simple_naive_test.csv", "./tests/simple_naive_train.csv", "./tests/simple_naive.out")
+    solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
+    # Print result
+    [print(n) for n in solution.run()]
+    # CrossFold.fold_create("pima-folds.csv", CrossFold.read_file_data("pima.csv"))
+    # CrossFold.split_folder_to_files("pima-folds.csv", 1,"./tests/simple_naive_test.csv", "./tests/simple_naive_train.csv", "./tests/simple_naive.out")
     
     '''
     Example of using euclidean
