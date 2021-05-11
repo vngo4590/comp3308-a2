@@ -1,4 +1,4 @@
-##ThreeDigits
+#MyClassifier
 import sys
 class MyClassifier:
     def __init__(self, training_data_name:str, test_data_name:str,algo_type:str):
@@ -72,10 +72,6 @@ class MyClassifier:
         
 
         
-# from nodes import Node
-# from tree import Tree
-
-#print(algorithm)
 '''
 GET ARGUMENTS
 '''
