@@ -2,6 +2,7 @@
 import sys
 from CrossFold import CrossFold
 import numbers
+import math
 class MyClassifier:
     def __init__(self, training_data_name:str, test_data_name:str,algo_type:str):
         '''
@@ -33,11 +34,22 @@ class MyClassifier:
         if n == 0:
             return 0
         return sum_result/n
-    # def find_standard_deviation(self, column_no:int):
-    #     # test if the values are within bound
-    #     if column_no < 0 or column_no >= len(self.training_data):
-    #         return None
-
+    def find_standard_deviation(self, column_no:int):
+        # test if the values are within bound
+        if self.training_data == None or column_no < 0 or column_no >= len(self.training_data):
+            return None
+        mean = self.find_mean(column_no)
+        sum_std = 0
+        n = 0
+        for line in self.training_data:
+            current = line[column_no]
+            if (isinstance(current, numbers.Number)):
+                n += 1
+                sum_std += pow((current-mean),2)
+        if n == 0:
+            return 0
+        return math.sqrt(sum_std/(n-1))
+    
 #print(algorithm)
 '''
 GET ARGUMENTS
@@ -47,4 +59,5 @@ if len(sys.argv) != 4:
 else :
     # Declare the class & then execute
     solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
-    print(solution.find_mean(2))
+    print(solution.find_standard_deviation(1))
+    
