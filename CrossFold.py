@@ -154,7 +154,7 @@ class CrossFold:
         try:
             f = open(data_dir, 'r')
         except OSError:
-            print ("File cannot be opened {:s}".format(self.file_name))
+            print ("File cannot be opened {:s}".format(data_dir))
             return None
         with f:
             # Strip all white space characters in line
