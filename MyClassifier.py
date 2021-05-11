@@ -85,7 +85,33 @@ class MyClassifier:
         :param neighbors_no: number of neighbours
         :return: yes or no
         '''
-        return "yes"
+        distances = []
+        for train_data in self.training_data:
+            dist = self.find_euclidean(test, train_data)
+            distances.append(dist)
+        ordered_dist = sorted(distances)
+        neighbours = []
+        for nums in ordered_dist:
+            i = 0
+        while i < neighbors_no:
+            close_no = ordered_dist(i)
+            neighbours.append(close_no)
+            i = i + 1
+        classes = []
+        for line in neighbours:
+            cols = line.split(',')
+            classes.append(cols[len(cols) - 1])
+        yes = 0
+        no = 0
+        for ans in classes:
+            if ans == 'yes':
+                yes = yes + 1
+            elif ans = 'no':
+                no = no + 1
+        if yes > no:
+            return "yes"
+        else:
+            return "no"
     def count_class(self, class_str:str):
         class_type = class_str
         count = 0
