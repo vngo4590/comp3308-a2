@@ -29,16 +29,12 @@ class MyClassifier:
         sum_eu = 0
         for i in range(0, len(train_sample)):
             if isinstance((train_sample[i]), numbers.Number) and isinstance((test[i]), numbers.Number):
-                sum_eu += pow((train_sample[i]-test[i]), 2)
+                sum_eu += (train_sample[i]-test[i]) ** 2
         return math.sqrt(sum_eu)
 
     def find_mean(self, column_no:int, class_str:str):
-        class_type = class_str.strip().lower()
-        if (class_type == None):
-            return None
-        # test if the values are within bound
-        if self.training_data == None or column_no < 0 or column_no >= len(self.training_data):
-            return None
+        class_type = class_str
+        
         # Go through the training set and find the mean 
         # Since the input can be None or str, we only need to count values that actually exist
         n = 0
@@ -46,34 +42,29 @@ class MyClassifier:
         for line in self.training_data:
             if column_no < len(line):
                 current = line[column_no]
-                if (isinstance(current, numbers.Number) and line[-1].strip().lower() == class_type):
+                if (isinstance(current, numbers.Number) and line[-1] == class_type):
                     n += 1
                     sum_result += current
         if n == 0:
             return 0
         return sum_result/n
     def find_standard_deviation(self, column_no:int, class_str:str):
-        class_type = class_str.strip().lower()
-        if (class_type == None):
-            return None
-        # test if the values are within bound
-        if self.training_data == None or column_no < 0 or column_no >= len(self.training_data):
-            return None
+        class_type = class_str
         mean = self.find_mean(column_no, class_type)
         sum_std = 0
         n = 0
         for line in self.training_data:
             if column_no < len(line):
                 current = line[column_no]
-                if (isinstance(current, numbers.Number) and line[-1].strip().lower() == class_type):
+                if (isinstance(current, numbers.Number) and line[-1] == class_type):
                     n += 1
-                    sum_std += pow((current-mean),2)
+                    sum_std += (current - mean) ** 2
         if n <= 1:
             return None
-        return math.sqrt(sum_std/(n-1))
+        return (sum_std/(n-1))**(1/2)
     # column 0 to len(n)-1
     def find_density(self, column_no:int, x:numbers.Number, class_str: str):
-        class_type = class_str.strip().lower()
+        class_type = class_str
         if (class_type == None):
             return None
         # test if the values are within bound
@@ -81,10 +72,10 @@ class MyClassifier:
             return None
         mean = self.find_mean(column_no, class_type)
         std_deviation = self.find_standard_deviation(column_no, class_type)
-        if (std_deviation==None or std_deviation==0 or mean==None ):
+        if (std_deviation==None or std_deviation==0 or mean==None):
             return None
-        factor = 1/(std_deviation*math.sqrt(2*math.pi))
-        exp_hat = math.exp((-1)*(pow((x - mean), 2))/(2*pow(std_deviation,2)))
+        factor = 1/(std_deviation*((2*math.pi)**(1/2)))
+        exp_hat = math.exp((-1)*(((x - mean) ** 2))/(2*(std_deviation ** 2)))
         return factor*exp_hat
     
     def k_nearest_neighbors(self, test:List, neighbors_no:int):
@@ -97,7 +88,7 @@ class MyClassifier:
         '''
         return "yes"
     def count_class(self, class_str:str):
-        class_type = class_str.strip().lower()
+        class_type = class_str
         count = 0
         for line in self.training_data:
             if (line[-1] == class_type):
@@ -155,7 +146,7 @@ if len(sys.argv) != 4:
     print("Wrong Input")
 else :
     # Declare the class & then execute
-    solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
+    solution = MyClassifier(sys.argv[1], sys.argv[2], sys.argv[3])
     # Print result
     [print(n) for n in solution.run()]
     # CrossFold.fold_create("pima-folds.csv", CrossFold.read_file_data("pima.csv"))
