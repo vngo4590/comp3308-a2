@@ -3,6 +3,7 @@ import sys
 from CrossFold import CrossFold
 import numbers
 import math
+from typing import List
 class MyClassifier:
     def __init__(self, training_data_name:str, test_data_name:str,algo_type:str):
         '''
@@ -17,7 +18,8 @@ class MyClassifier:
                 array of length 2 for number of nearest neighbor and type
         '''
         self.algo_type = CrossFold.get_algo_type(algo_type)
-        self.accuracy = 0
+        # Result storing yes or no
+        self.result = []
     def find_mean(self, column_no:int):
         # test if the values are within bound
         if self.training_data == None or column_no < 0 or column_no >= len(self.training_data):
@@ -59,6 +61,45 @@ class MyClassifier:
         exp_hat = math.exp((-1*pow((x-mean), 2))/(2*pow(std_deviation,2)))
         return factor*exp_hat
     
+    def k_nearest_neighbors(self, test:List, neighbors_no:int):
+        '''
+        From the training set, begin to search for k nearest neighbors
+        return either yes or no
+        :param test: one line from the test set
+        :param neighbors_no: number of neighbours
+        :return: yes or no
+        '''
+        return "yes"
+    def naive_bayes(self, test:List):
+        '''
+        From the training set, begin to search for value using Naive Bayes
+        return either yes or no
+        :param test: one line from the test set
+        :return: yes or no
+        '''
+        return "yes"
+    def run(self):
+        '''
+        main function to execute the algorithms. This function will call k_nearest neighbors or naive_bayes directly.
+        Print output
+        :return: array of results
+        '''
+        if (self.algo_type == None):
+            print("Incorrect function type")
+            return None
+        elif len(self.algo_type)==2 and (self.algo_type[1] < 1 or self.algo_type[1] > len(self.training_data)):
+            print("Incorrect number of neighbours")
+            return None
+        '''
+        Run program and then execute the algo
+        '''
+        algo_type_str = self.algo_type[0]
+        if algo_type_str == 'nn':
+            self.result = [self.k_nearest_neighbors(test, self.algo_type[1]) for test in self.test_data]
+        elif algo_type_str == 'nb':
+            self.result = [self.naive_bayes(test) for test in self.test_data]
+        return self.result
+    
     
 #print(algorithm)
 '''
@@ -69,5 +110,6 @@ if len(sys.argv) != 4:
 else :
     # Declare the class & then execute
     solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
-    print(solution.find_density(1, 0.16))
+    # Print result
+    [print(n) for n in solution.run()]
     

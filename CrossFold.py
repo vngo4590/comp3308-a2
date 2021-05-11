@@ -136,7 +136,7 @@ class CrossFold:
                 if sample[-2:] == 'nn':
                     try:
                         num_nearest = int(sample[:-2])
-                        return [num_nearest, sample[-2:]]
+                        return [sample[-2:],num_nearest]
                     except:
                         return None
                 else:
