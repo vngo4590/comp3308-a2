@@ -46,7 +46,7 @@ class MyClassifier:
             if (isinstance(current, numbers.Number)):
                 n += 1
                 sum_std += pow((current-mean),2)
-        if n == 0:
+        if n <= 1:
             return 0
         return math.sqrt(sum_std/(n-1))
     
