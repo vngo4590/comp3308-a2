@@ -20,7 +20,10 @@ class MyClassifier:
         self.algo_type = CrossFold.get_algo_type(algo_type)
         # Result storing yes or no
         self.result = []
-    def find_mean(self, column_no:int):
+    def find_mean(self, column_no:int, class_str:str):
+        class_type = class_str.strip().lower()
+        if (class_type == None):
+            return None
         # test if the values are within bound
         if self.training_data == None or column_no < 0 or column_no >= len(self.training_data):
             return None
@@ -29,34 +32,45 @@ class MyClassifier:
         n = 0
         sum_result = 0
         for line in self.training_data:
-            current = line[column_no]
-            if (isinstance(current, numbers.Number)):
-                n += 1
-                sum_result += current
+            if column_no < len(line):
+                current = line[column_no]
+                if (isinstance(current, numbers.Number) and line[-1].strip().lower() == class_type):
+                    n += 1
+                    sum_result += current
         if n == 0:
             return 0
         return sum_result/n
-    def find_standard_deviation(self, column_no:int):
+    def find_standard_deviation(self, column_no:int, class_str:str):
+        class_type = class_str.strip().lower()
+        if (class_type == None):
+            return None
         # test if the values are within bound
         if self.training_data == None or column_no < 0 or column_no >= len(self.training_data):
             return None
-        mean = self.find_mean(column_no)
+        mean = self.find_mean(column_no, class_type)
         sum_std = 0
         n = 0
         for line in self.training_data:
-            current = line[column_no]
-            if (isinstance(current, numbers.Number)):
-                n += 1
-                sum_std += pow((current-mean),2)
+            if column_no < len(line):
+                current = line[column_no]
+                if (isinstance(current, numbers.Number) and line[-1].strip().lower() == class_type):
+                    n += 1
+                    sum_std += pow((current-mean),2)
         if n <= 1:
             return 0
         return math.sqrt(sum_std/(n-1))
-    def find_density(self, column_no:int, x:numbers.Number):
+    # column 0 to len(n)-1
+    def find_density(self, column_no:int, x:numbers.Number, class_str: str):
+        class_type = class_str.strip().lower()
+        if (class_type == None):
+            return None
         # test if the values are within bound
         if self.training_data == None or column_no < 0 or column_no >= len(self.training_data):
             return None
-        mean = self.find_mean(column_no)
-        std_deviation = self.find_standard_deviation(column_no)
+        mean = self.find_mean(column_no, class_type)
+        std_deviation = self.find_standard_deviation(column_no, class_type)
+        if (std_deviation==0):
+            return None
         factor = 1/(std_deviation*math.sqrt(2*math.pi))
         exp_hat = math.exp((-1*pow((x-mean), 2))/(2*pow(std_deviation,2)))
         return factor*exp_hat
@@ -111,5 +125,5 @@ else :
     # Declare the class & then execute
     solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
     # Print result
-    [print(n) for n in solution.run()]
-    
+    # [print(n) for n in solution.run()]
+    print(solution.find_density(4, 0.3, 'yes'))
