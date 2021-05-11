@@ -69,7 +69,7 @@ class MyClassifier:
                     n += 1
                     sum_std += pow((current-mean),2)
         if n <= 1:
-            return 0
+            return None
         return math.sqrt(sum_std/(n-1))
     # column 0 to len(n)-1
     def find_density(self, column_no:int, x:numbers.Number, class_str: str):
@@ -81,10 +81,10 @@ class MyClassifier:
             return None
         mean = self.find_mean(column_no, class_type)
         std_deviation = self.find_standard_deviation(column_no, class_type)
-        if (std_deviation==0):
+        if (std_deviation==None or std_deviation==0 or mean==None ):
             return None
         factor = 1/(std_deviation*math.sqrt(2*math.pi))
-        exp_hat = math.exp((-1*pow((x-mean), 2))/(2*pow(std_deviation,2)))
+        exp_hat = math.exp((-1)*(pow((x - mean), 2))/(2*pow(std_deviation,2)))
         return factor*exp_hat
     
     def k_nearest_neighbors(self, test:List, neighbors_no:int):
@@ -96,6 +96,14 @@ class MyClassifier:
         :return: yes or no
         '''
         return "yes"
+    def count_class(self, class_str:str):
+        class_type = class_str.strip().lower()
+        count = 0
+        for line in self.training_data:
+            if (line[-1] == class_type):
+                count += 1
+        return count
+        
     def naive_bayes(self, test:List):
         '''
         From the training set, begin to search for value using Naive Bayes
@@ -103,7 +111,19 @@ class MyClassifier:
         :param test: one line from the test set
         :return: yes or no
         '''
-        return "yes"
+        # Count yes and no's
+        yes_count = self.count_class('yes')
+        no_count = self.count_class('no')
+        total_class_count = yes_count + no_count
+        yes_result = yes_count/total_class_count
+        no_result = no_count/total_class_count
+        for i in range(0, len(test)):
+            yes_result *= self.find_density(i, test[i], 'yes')
+            no_result *= self.find_density(i, test[i], 'no')
+        if no_result > yes_result:
+            return "no"
+        else:
+            return "yes"
     def run(self):
         '''
         main function to execute the algorithms. This function will call k_nearest neighbors or naive_bayes directly.
@@ -135,9 +155,12 @@ if len(sys.argv) != 4:
     print("Wrong Input")
 else :
     # Declare the class & then execute
-    solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
-    # Print result
-    # [print(n) for n in solution.run())
+    # solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
+    # # Print result
+    # [print(n) for n in solution.run()]
+    CrossFold.fold_create("pima-folds.csv", CrossFold.read_file_data("pima.csv"))
+    CrossFold.split_folder_to_files("pima-folds.csv", 1,"./tests/simple_naive_test.csv", "./tests/simple_naive_train.csv", "./tests/simple_naive.out")
+    
     '''
     Example of using euclidean
     print(solution.find_euclidean([1, 0.1, 3.9, "yes"], [1, 2, 0.3]))

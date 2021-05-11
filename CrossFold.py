@@ -2,6 +2,7 @@ from typing import List
 import random
 import math
 import csv
+from sklearn.model_selection import train_test_split
 class CrossFold:
     '''
     This method is used to look for fold inside the data
@@ -15,13 +16,14 @@ class CrossFold:
         testing_set = []
         training_set = []
         result_set = []
+
         for line in data:
             if is_testing==False and len(line) == 1 and line[0].strip().lower() == fold_name:
                 is_testing = True
             elif is_testing and len(line) == 1 and line[0].strip().lower() != fold_name:
                 is_testing = False
             else:
-                if (len(line) != 1 or line[0].strip().lower()[:4] != "fold"):
+                if (len(line) > 1):
                     if is_testing:
                         testing_set.append(line[:-1])
                         result_set.append(line[-1:])
@@ -54,6 +56,40 @@ class CrossFold:
             raise("Unable to write to file")
             return None
         with f:
+            '''
+            # Yes List
+            yes_list = list(filter(lambda line: line[-1].strip().lower()=='yes',data))
+            # No List
+            no_list = list(filter(lambda line: line[-1].strip().lower()=='no',data))
+            # Left over list
+            off_list = []
+            offset = len(yes_list) - len(no_list)
+            larger_list = None
+            if offset < 0:
+                larger_list = no_list
+            elif offset > 0:
+                larger_list = yes_list
+            
+            offset = abs(offset)
+            while offset > 0 and larger_list != None:
+                line = random.choice(larger_list)
+                off_list.append(line)
+                larger_list.remove(line)
+                offset -= 1
+            
+            # How many do we need to extra values add per fold?
+            num_input_offset = math.ceil(len(off_list)/fold_num)
+            '''
+            X = data
+            y = range(len(X))
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1/fold_num, random_state=2)
+            # Yes List
+            yes_list = list(filter(lambda line: line[-1].strip().lower()=='yes',X_test))
+            # No List
+            no_list = list(filter(lambda line: line[-1].strip().lower()=='no',X_test))
+            print(len(no_list))
+            print(len(yes_list))
+
             csv_file = csv.writer(f)
             # Get the length of each fold
             fold_length = math.floor(len(data)/fold_num)
@@ -61,6 +97,7 @@ class CrossFold:
             left_over = (len(data)-(fold_length*fold_num))
             # We add extra data inside
             fold_length += math.floor(left_over/fold_num)
+            
             # Go through each fold and write to file
             for fold_counter in range(1, fold_num+1):
                 csv_file.writerow(["fold"+str(fold_counter)])
@@ -74,6 +111,7 @@ class CrossFold:
                         csv_file.writerow(current_line)
                     else:
                         break
+                csv_file.writerow([])
                 if (left_over > 0):
                     left_over -= 1
                 if len(data) == 0:
