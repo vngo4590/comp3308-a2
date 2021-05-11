@@ -18,16 +18,25 @@ class MyClassifier:
         self.algo_type = CrossFold.get_algo_type(algo_type)
         self.accuracy = 0
     def find_mean(self, column_no:int):
+        # test if the values are within bound
+        if self.training_data == None or column_no < 0 or column_no >= len(self.training_data):
+            return None
         # Go through the training set and find the mean 
         # Since the input can be None or str, we only need to count values that actually exist
         n = 0
-        sum = 0
-        return 0
-            
-
-        
-# from nodes import Node
-# from tree import Tree
+        sum_result = 0
+        for line in self.training_data:
+            current = line[column_no]
+            if (isinstance(current, numbers.Number)):
+                n += 1
+                sum_result += current
+        if n == 0:
+            return 0
+        return sum_result/n
+    # def find_standard_deviation(self, column_no:int):
+    #     # test if the values are within bound
+    #     if column_no < 0 or column_no >= len(self.training_data):
+    #         return None
 
 #print(algorithm)
 '''
@@ -38,4 +47,4 @@ if len(sys.argv) != 4:
 else :
     # Declare the class & then execute
     solution = MyClassifier(sys.argv[1].strip(), sys.argv[2].strip(), sys.argv[3].strip())
-    CrossFold.split_folder_to_files("pima-folds.csv", 1, "test.csv", "train.csv", "result.csv")
+    print(solution.find_mean(2))
