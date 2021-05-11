@@ -158,8 +158,7 @@ class CrossFold:
             return None
         with f:
             # Strip all white space characters in line
-            lines = [line.strip() for line in f]
-            result = [CrossFold.convert_line_to_data(line) for line in lines]
+            result = [CrossFold.convert_line_to_data(line) for line in f]
             f.close()
         return result
     @staticmethod
@@ -170,7 +169,7 @@ class CrossFold:
             i = 2
             
             # collecting forbidden numbers
-            temp = [v.strip().lower() for v in line.split(',')]
+            temp = [v.strip() for v in line.split(',')]
             for t in temp:
                 try :
                     result.append(float(t))
