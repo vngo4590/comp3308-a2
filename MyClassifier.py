@@ -34,11 +34,7 @@ class MyClassifier:
 
     def find_mean(self, column_no:int, class_str:str):
         class_type = class_str
-        if (class_type == None):
-            return None
-        # test if the values are within bound
-        if self.training_data == None or column_no < 0 or column_no >= len(self.training_data):
-            return None
+        
         # Go through the training set and find the mean 
         # Since the input can be None or str, we only need to count values that actually exist
         n = 0
@@ -54,11 +50,6 @@ class MyClassifier:
         return sum_result/n
     def find_standard_deviation(self, column_no:int, class_str:str):
         class_type = class_str
-        if (class_type == None):
-            return None
-        # test if the values are within bound
-        if self.training_data == None or column_no < 0 or column_no >= len(self.training_data):
-            return None
         mean = self.find_mean(column_no, class_type)
         sum_std = 0
         n = 0
