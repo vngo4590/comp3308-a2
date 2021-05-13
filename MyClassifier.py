@@ -1,4 +1,4 @@
-##ThreeDigits
+#MyClassifier
 import sys
 from CrossFold import CrossFold
 import numbers
@@ -24,18 +24,19 @@ class MyClassifier:
         if (train == None or test == None):
             return None
         train_sample = train[:-1]
-        if (len(train_sample) != len(test)):
-            return None
+        # if (len(train_sample) != len(test)):
+        #     print("not equal")
+        #     return None
         sum_eu = 0
         for i in range(0, len(train_sample)):
             if isinstance((train_sample[i]), numbers.Number) and isinstance((test[i]), numbers.Number):
                 sum_eu += (train_sample[i]-test[i]) ** 2
-        return math.sqrt(sum_eu)
+        return sum_eu**(1/2)
 
     def find_mean(self, column_no:int, class_str:str):
         class_type = class_str
-        
-        # Go through the training set and find the mean 
+
+        # Go through the training set and find the mean
         # Since the input can be None or str, we only need to count values that actually exist
         n = 0
         sum_result = 0
@@ -77,7 +78,8 @@ class MyClassifier:
         factor = 1/(std_deviation*((2*math.pi)**(1/2)))
         exp_hat = math.exp((-1)*(((x - mean) ** 2))/(2*(std_deviation ** 2)))
         return factor*exp_hat
-    
+
+
     def k_nearest_neighbors(self, test:List, neighbors_no:int):
         '''
         From the training set, begin to search for k nearest neighbors
@@ -86,7 +88,40 @@ class MyClassifier:
         :param neighbors_no: number of neighbours
         :return: yes or no
         '''
-        return "yes"
+        distances = []
+        i = 0
+        while i < len(self.training_data):
+            dist = self.find_euclidean(self.training_data[i], test)
+            #making distances a tuple with a unique id and the distance
+            distances.append((dist,i))
+            i = i + 1
+        ordered_dist = sorted(distances)
+        j = 0
+        indices = []
+        neighbours = []
+        while j < neighbors_no:
+            neighbour = ordered_dist[j]
+            indices.append(neighbour[1])
+            j = j + 1
+        classes = []
+        m = 0
+        while m < len(self.training_data):
+            train_line = self.training_data[m]
+            if m in indices:
+                classes.append(train_line[len(train_line)-1])
+            m = m + 1
+        yes = 0
+        no = 0
+        for ans in classes:
+            if ans == 'yes':
+                yes = yes + 1
+            elif ans == 'no':
+                no = no + 1
+        if yes > no:
+            return "yes"
+        else:
+            return "no"
+
     def count_class(self, class_str:str):
         class_type = class_str
         count = 0
@@ -94,7 +129,7 @@ class MyClassifier:
             if (line[-1] == class_type):
                 count += 1
         return count
-        
+
     def naive_bayes(self, test:List):
         '''
         From the training set, begin to search for value using Naive Bayes
@@ -136,8 +171,8 @@ class MyClassifier:
         elif algo_type_str == 'nb':
             self.result = [self.naive_bayes(test) for test in self.test_data]
         return self.result
-    
-    
+
+
 #print(algorithm)
 '''
 GET ARGUMENTS
@@ -148,10 +183,20 @@ else :
     # Declare the class & then execute
     solution = MyClassifier(sys.argv[1], sys.argv[2], sys.argv[3])
     # Print result
+
+    #Alana's test
+    # train = solution.training_data
+    # testing = solution.test_data
+    # print(train)
+    # for t in train:
+    #     for test in testing:
+    #         print(t)
+    #         print(test)
+    #         print(solution.find_euclidean(t, test))
     [print(n) for n in solution.run()]
     # CrossFold.fold_create("pima-folds.csv", CrossFold.read_file_data("pima.csv"))
     # CrossFold.split_folder_to_files("pima-folds.csv", 1,"./tests/simple_naive_test.csv", "./tests/simple_naive_train.csv", "./tests/simple_naive.out")
-    
+
     '''
     Example of using euclidean
     print(solution.find_euclidean([1, 0.1, 3.9, "yes"], [1, 2, 0.3]))
