@@ -79,7 +79,7 @@ class CrossFold:
             raise("Unable to write to file")
             return None
         with f:
-            
+
             # Yes List
             yes_list = list(filter(lambda line: line[-1].strip().lower()=='yes',data))
             # No List
@@ -92,16 +92,16 @@ class CrossFold:
                 larger_list = no_list
             elif offset > 0:
                 larger_list = yes_list
-            
-            
+
+
             # How many do we need to extra values add per fold?
             num_input_offset = math.ceil(len(off_list)/fold_num)
-            
+
 
             csv_file = csv.writer(f)
             # Get the length of each fold
             fold_length = math.floor((len(no_list)+len(yes_list) - abs(offset))/fold_num)
-            
+
             fold_list = []
             current_class = 'yes'
             # Go through each fold and write to file
@@ -123,7 +123,7 @@ class CrossFold:
                     break
             running = True
             while (len(yes_list)>0 or len(no_list)>0):
-                
+
                 for fold in fold_list:
                     class_insert = CrossFold.class_to_insert(fold, len(yes_list), len(no_list))
                     if class_insert == 'yes':
@@ -154,7 +154,7 @@ class CrossFold:
         try:
             f = open(data_dir, 'r')
         except OSError:
-            print ("File cannot be opened {:s}".format(self.file_name))
+            print ("File cannot be opened {:s}".format(data_dir))
             return None
         with f:
             # Strip all white space characters in line
@@ -167,14 +167,14 @@ class CrossFold:
         try :
             result = []
             i = 2
-            
+
             # collecting forbidden numbers
             temp = [v.strip() for v in line.split(',')]
             for t in temp:
                 try :
                     result.append(float(t))
                 except ValueError:
-                    
+
                     result.append(t)
                     continue
             i +=1
@@ -199,4 +199,3 @@ class CrossFold:
                 else:
                     return None
         return None
-        
