@@ -183,7 +183,8 @@ else :
     # Declare the class & then execute
     solution = MyClassifier(sys.argv[1], sys.argv[2], sys.argv[3])
     # Print result
-
+    [print(n) for n in solution.run()]
+    
     #Alana's test
     # train = solution.training_data
     # testing = solution.test_data
@@ -193,11 +194,6 @@ else :
     #         print(t)
     #         print(test)
     #         print(solution.find_euclidean(t, test))
-    [print(n) for n in solution.run()]
+    
     # CrossFold.fold_create("pima-folds.csv", CrossFold.read_file_data("pima.csv"))
     # CrossFold.split_folder_to_files("pima-folds.csv", 1,"./tests/simple_naive_test.csv", "./tests/simple_naive_train.csv", "./tests/simple_naive.out")
-
-    '''
-    Example of using euclidean
-    print(solution.find_euclidean([1, 0.1, 3.9, "yes"], [1, 2, 0.3]))
-    '''
